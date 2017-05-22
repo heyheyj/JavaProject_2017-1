@@ -51,9 +51,39 @@ public class base {
 		ToolBar.add(new JLabel("ToolBar"));
 		
 		// 속성/Editor패널구현
+		/* 속성 패널 영역 시작 */
 		JPanel PanelAttribute = new JPanel();
-		PanelAttribute.setLayout(new FlowLayout(FlowLayout.LEFT,30,40));
-		PanelAttribute.add(new JLabel("Attribute Pane"));
+		PanelAttribute.setLayout(new GridLayout(7,2,0,5));
+		
+		PanelAttribute.add(new JLabel("시작 x 좌표 : "));
+		JTextField startX = new JTextField("");
+		PanelAttribute.add(startX);
+		
+		PanelAttribute.add(new JLabel("시작 y 좌표 : "));
+		JTextField startY = new JTextField("");
+		PanelAttribute.add(startY);
+		
+		PanelAttribute.add(new JLabel("너비 :" ));
+		JTextField wide = new JTextField("");
+		PanelAttribute.add(wide);
+		
+		PanelAttribute.add(new JLabel("높이 :" ));
+		JTextField height = new JTextField("");
+		PanelAttribute.add(height);
+		
+		PanelAttribute.add(new JLabel("텍스트 속성값 : "));
+		JTextField txtAttr = new JTextField("");
+		PanelAttribute.add(txtAttr);
+		
+		PanelAttribute.add(new JLabel("타입 : "));
+		JComboBox compType = new JComboBox();
+		compType.addItem("");
+		PanelAttribute.add(compType);
+		
+		PanelAttribute.add(new JLabel("변수명 : "));
+		JTextField compName = new JTextField("");
+		PanelAttribute.add(compName);
+		/* 속성 패널 영역 끝 */
 		
 		JPanel PanelEditor = new JPanel();
 		PanelEditor.setLayout(new FlowLayout(FlowLayout.RIGHT,30,40));
