@@ -20,27 +20,33 @@ public class base {
 		JMenuItem newfile = new JMenuItem("새로 만들기(N)");
 		newfile.setMnemonic('N');
 		filemenu.add(newfile);
+		newfile.addActionListener(new MenuListener());
 		
 		JMenuItem open = new JMenuItem("열기(O)");
 		open.setMnemonic('O');
 		filemenu.add(open);
+		open.addActionListener(new MenuListener());
 		
 		JMenuItem save = new JMenuItem("저장(S)");
 		save.setMnemonic('S');
 		filemenu.add(save);
+		save.addActionListener(new MenuListener());
 		
 		JMenuItem saveName = new JMenuItem("다른 이름으로 저장(A)");
 		saveName.setMnemonic('A');
 		filemenu.add(saveName);
+		saveName.addActionListener(new MenuListener());
 		
 		JMenuItem newJava = new JMenuItem(".java파일 생성(J)");
 		newJava.setMnemonic('J');
 		filemenu.add(newJava);
+		newJava.addActionListener(new MenuListener());
 		
 		JMenuItem close = new JMenuItem("닫기(C)");
 		close.setMnemonic('C');
 		filemenu.add(close);
 		MenuBar.add(filemenu);
+		close.addActionListener(new MenuListener());
 		
 		// 툴바구현
 		JToolBar ToolBar = new JToolBar();
@@ -51,24 +57,6 @@ public class base {
 		ToolBar.add(new JButton("다른 이름으로 저장"));
 		ToolBar.add(new JButton(".java 파일 생성"));
 		ToolBar.add(new JButton("닫기"));
-		
-		
-		//이벤트 리스너
-		/*ActionListener action = new ActionListener();{
-			public void actionPerformed(ActionEvent e){
-				Object obj = e.getSource();
-				if(obj == newfile){
-					JOptionPane.showMessageDialog("새로운 파일 생성",JOptionPane.INFORMATION_MESSAGE);
-				}
-				else if(obj == close){
-					System.exit(1);
-				}
-			}
-		}
-		
-		newfile.addActionListener(action);
-		close.addActionListener(action);
-		*/
 		
 		
 		// 속성/Editor패널구현
@@ -129,9 +117,15 @@ public class base {
 		frame.setVisible(true);
 	}
 	
+	private class MenuListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(e.getActionCommand() == "닫기(C)")
+				System.exit(1);
+		}
+	}
+	
 	public static void main(String[] args){
 		base Base = new base();		
 	}
 }
-
-
