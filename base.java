@@ -97,6 +97,7 @@ public class base {
 		JPanel PanelEditor = new JPanel();
 		PanelEditor.setLayout(new FlowLayout(FlowLayout.RIGHT,30,40));
 		PanelEditor.add(new JLabel("Editor Pane"));
+		PanelEditor.addMouseListener(new EditorListener());
 		
 		// 속성페인과 에디터페인을 묶을 패널
 		JPanel Subpanel = new JPanel();
@@ -124,7 +125,57 @@ public class base {
 				System.exit(1);
 		}
 	}
-	
+	private class ToolbarListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton b = (JButton) e.getSource();
+			if(b.getText().equals("닫기"))
+				System.exit(1);
+		}
+		
+	}
+	private class AttrListener1 implements TextListener{
+		@Override
+		public void textValueChanged(TextEvent arg0) {
+			
+		}
+	}
+	private class AttrListener2 implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent arg0) {
+
+		}
+		
+	}
+	private class EditorListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {
+
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+
+		}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+
+		}
+		
+	}
 	public static void main(String[] args){
 		base Base = new base();		
 	}
