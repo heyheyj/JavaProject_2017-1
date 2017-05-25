@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
 	base(){
-		Dimension dim = new Dimension(1000,1000);
+		Dimension dim = new Dimension(1500,1000);
 		setPreferredSize(dim);
 		setLocation(10,0);
 		setTitle("base");
