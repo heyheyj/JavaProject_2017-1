@@ -70,30 +70,31 @@ public class base extends JFrame{
 		PanelAttribute.add(box1);
 		JLabel LstartX = new JLabel("시작 x,y 좌표 : ");
 		box1.add(LstartX);
-		JTextField startX = new JTextField(10);
+		LstartX.setSize(15, 10);
+		JTextField startX = new JTextField(5);
 		box1.add(startX);
-		JTextField startY = new JTextField(10);
+		JTextField startY = new JTextField(5);
 		box1.add(startY);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box2 = Box.createHorizontalBox();
 		PanelAttribute.add(box2);
 		box2.add(new JLabel("너비 :" ));
-		JTextField wide = new JTextField("");
+		JTextField wide = new JTextField(5);
 		box2.add(wide);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box3 = Box.createHorizontalBox();
 		PanelAttribute.add(box3);
 		box3.add(new JLabel("높이 :" ));
-		JTextField height = new JTextField("");
+		JTextField height = new JTextField(5);
 		box3.add(height);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box4 = Box.createHorizontalBox();
 		PanelAttribute.add(box4);
 		box4.add(new JLabel("텍스트 속성값 : "));
-		JTextField txtAttr = new JTextField("");
+		JTextField txtAttr = new JTextField(15);
 		box4.add(txtAttr);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
@@ -108,7 +109,7 @@ public class base extends JFrame{
 		Box box6 = Box.createHorizontalBox();
 		PanelAttribute.add(box6);
 		box6.add(new JLabel("변수명 : "));
-		JTextField compName = new JTextField("");
+		JTextField compName = new JTextField(15);
 		box6.add(compName);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
