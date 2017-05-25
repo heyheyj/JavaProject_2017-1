@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class base extends JFrame{
-	JLabel la;
+	final int MAX_OBJECT = 100;
 	base(){
 		Dimension dim = new Dimension(1000,1000);
 		setPreferredSize(dim);
@@ -95,10 +95,11 @@ public class base extends JFrame{
 		PanelAttribute.add(compName);
 		
 		// editor 패널 구현
-		JPanel PanelEditor = new JPanel();
+		EditorPanel PanelEditor = new EditorPanel();
+		JLabel la;
 		la = new JLabel("Editor Pane");
 		PanelEditor.add(la);
-		PanelEditor.addMouseListener(new EditorListener());
+		//PanelEditor.addMouseListener(new EditorListener());
 		
 		//frame 전체를 BorderLayout으로 설정
 		Container contentPane = getContentPane();
@@ -107,6 +108,58 @@ public class base extends JFrame{
 		contentPane.add(PanelAttribute,BorderLayout.WEST);
 		contentPane.add(PanelEditor,BorderLayout.CENTER);
 		pack();
+	}
+	
+	private class EditorPanel extends JPanel{
+		int x[] = new int[MAX_OBJECT];
+		int y[] = new int[MAX_OBJECT];
+		int i=0, count=0;
+		EditorPanel(){
+			addMouseListener(new MouseAdapter(){
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+
+				}
+
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					x[i] = e.getX();
+					y[i] = e.getY();
+					i++; count++;
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+
+				}
+				
+				@Override
+				public void mouseDragged(MouseEvent arg0) {
+					
+				}
+				
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+					
+				}
+			});
+		}
+		
+		public void paintComponent(Graphics g){
+			super.paintComponent(g);
+			repaint();
+			for(int a=0; a<count; a++)
+				g.drawRect(x[a], y[a], 30, 30);
+		}
 	}
 	
 	
@@ -140,45 +193,7 @@ public class base extends JFrame{
 		}
 		
 	}
-	private class EditorListener extends MouseAdapter{
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent arg0) {
-
-		}
-
-		@Override
-		public void mouseExited(MouseEvent arg0) {
-
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			int x = e.getX();
-			int y = e.getY();
-			la.setLocation(x,y);
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent arg0) {
-
-		}
-		
-		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			
-		}
-		
-		@Override
-		public void mouseMoved(MouseEvent arg0) {
-			
-		}
-		
-	}
+	
 	public static void main(String[] args){
 		new base();	
 	}
