@@ -113,7 +113,7 @@ public class base extends JFrame{
 	private class EditorPanel extends JPanel{
 		int x[] = new int[MAX_OBJECT];
 		int y[] = new int[MAX_OBJECT];
-		int i=0, count=0;
+		int count=0;
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
 				@Override
@@ -132,9 +132,9 @@ public class base extends JFrame{
 
 				@Override
 				public void mousePressed(MouseEvent e) {
-					x[i] = e.getX();
-					y[i] = e.getY();
-					i++; count++;
+					x[count] = e.getX();
+					y[count] = e.getY();
+					count++;
 				}
 
 				@Override
@@ -157,8 +157,8 @@ public class base extends JFrame{
 		public void paintComponent(Graphics g){
 			super.paintComponent(g);
 			repaint();
-			for(int a=0; a<count; a++)
-				g.drawRect(x[a], y[a], 30, 30);
+			for(int i=0; i<count; i++)
+				g.drawRect(x[i], y[i], 30, 30);
 		}
 	}
 	
