@@ -168,6 +168,16 @@ public class base extends JFrame{
 
 		}
 		
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent arg0) {
+			
+		}
+		
 	}
 	public static void main(String[] args){
 		new base();	
