@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class base extends JFrame{
+	JLabel la;
 	base(){
 		Dimension dim = new Dimension(1000,1000);
 		setPreferredSize(dim);
@@ -95,7 +96,8 @@ public class base extends JFrame{
 		
 		// editor 패널 구현
 		JPanel PanelEditor = new JPanel();
-		PanelEditor.add(new JLabel("Editor Pane"));
+		la = new JLabel("Editor Pane");
+		PanelEditor.add(la);
 		PanelEditor.addMouseListener(new EditorListener());
 		
 		//frame 전체를 BorderLayout으로 설정
@@ -155,8 +157,10 @@ public class base extends JFrame{
 		}
 
 		@Override
-		public void mousePressed(MouseEvent arg0) {
-
+		public void mousePressed(MouseEvent e) {
+			int x = e.getX();
+			int y = e.getY();
+			la.setLocation(x,y);
 		}
 
 		@Override
