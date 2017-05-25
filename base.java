@@ -63,43 +63,62 @@ public class base extends JFrame{
 		
 		// 속성 패널구현
 		JPanel PanelAttribute = new JPanel();
-		PanelAttribute.setLayout(new GridLayout(7,2,0,5));
+		PanelAttribute.setLayout(new BoxLayout(PanelAttribute, BoxLayout.Y_AXIS));
 		
-		PanelAttribute.add(new JLabel("시작 x 좌표 : "));
-		JTextField startX = new JTextField("");
-		PanelAttribute.add(startX);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
+		Box box1 = Box.createHorizontalBox();
+		PanelAttribute.add(box1);
+		JLabel LstartX = new JLabel("시작 x,y 좌표 : ");
+		box1.add(LstartX);
+		JTextField startX = new JTextField(10);
+		box1.add(startX);
+		JTextField startY = new JTextField(10);
+		box1.add(startY);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		PanelAttribute.add(new JLabel("시작 y 좌표 : "));
-		JTextField startY = new JTextField("");
-		PanelAttribute.add(startY);
-		
-		PanelAttribute.add(new JLabel("너비 :" ));
+		Box box2 = Box.createHorizontalBox();
+		PanelAttribute.add(box2);
+		box2.add(new JLabel("너비 :" ));
 		JTextField wide = new JTextField("");
-		PanelAttribute.add(wide);
+		box2.add(wide);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		PanelAttribute.add(new JLabel("높이 :" ));
+		Box box3 = Box.createHorizontalBox();
+		PanelAttribute.add(box3);
+		box3.add(new JLabel("높이 :" ));
 		JTextField height = new JTextField("");
-		PanelAttribute.add(height);
+		box3.add(height);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		PanelAttribute.add(new JLabel("텍스트 속성값 : "));
+		Box box4 = Box.createHorizontalBox();
+		PanelAttribute.add(box4);
+		box4.add(new JLabel("텍스트 속성값 : "));
 		JTextField txtAttr = new JTextField("");
-		PanelAttribute.add(txtAttr);
+		box4.add(txtAttr);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		PanelAttribute.add(new JLabel("타입 : "));
+		Box box5 = Box.createHorizontalBox();
+		PanelAttribute.add(box5);
+		box5.add(new JLabel("타입 : "));
 		JComboBox compType = new JComboBox();
 		compType.addItem("");
-		PanelAttribute.add(compType);
+		box5.add(compType);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		PanelAttribute.add(new JLabel("변수명 : "));
+		Box box6 = Box.createHorizontalBox();
+		PanelAttribute.add(box6);
+		box6.add(new JLabel("변수명 : "));
 		JTextField compName = new JTextField("");
-		PanelAttribute.add(compName);
+		box6.add(compName);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
+		
+		JButton apply = new JButton("적용");
+		PanelAttribute.add(apply);
+		PanelAttribute.add(Box.createRigidArea(new Dimension(1,100)));
 		
 		// editor 패널 구현
 		EditorPanel PanelEditor = new EditorPanel();
-		JLabel la;
-		la = new JLabel("Editor Pane");
-		PanelEditor.add(la);
-		//PanelEditor.addMouseListener(new EditorListener());
+		PanelEditor.add(new JLabel("Editor Pane"));
 		
 		//frame 전체를 BorderLayout으로 설정
 		Container contentPane = getContentPane();
@@ -110,7 +129,7 @@ public class base extends JFrame{
 		pack();
 	}
 	
-	private class EditorPanel extends JPanel{
+	private class EditorPanel extends JPanel{ // editor 패널 동작 구현
 		int x[] = new int[MAX_OBJECT];
 		int y[] = new int[MAX_OBJECT];
 		int count=0;
@@ -158,7 +177,7 @@ public class base extends JFrame{
 			super.paintComponent(g);
 			repaint();
 			for(int i=0; i<count; i++)
-				g.drawRect(x[i], y[i], 30, 30);
+				g.drawRect(x[i], y[i], 50, 50);
 		}
 	}
 	
