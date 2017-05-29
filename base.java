@@ -1,10 +1,44 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Rectangle2D;
 
-class Rectangle{
-	
+class MyButton extends JButton{
+	MyButton(String s){
+		super(s);
+		addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				setBackground(Color.BLACK);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+			}
+		});
+	}
 }
 
 public class base extends JFrame{
@@ -12,7 +46,7 @@ public class base extends JFrame{
 	JPanel PanelAttribute;
 	EditorPanel PanelEditor;
 	JTextField startX;
-	JButton button[] = new JButton[MAX_OBJECT];
+	MyButton button[] = new MyButton[MAX_OBJECT];
 	
 	base(){
 		Dimension dim = new Dimension(1500,1000);
@@ -147,6 +181,8 @@ public class base extends JFrame{
 		int end_y[] = new int[MAX_OBJECT];
 		int width[] = new int[MAX_OBJECT];
 		int height[] = new int[MAX_OBJECT];
+		int assi_x, assi_y;
+		int assi_count = 0;
 		int count=0;
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
@@ -168,6 +204,7 @@ public class base extends JFrame{
 				public void mousePressed(MouseEvent e) {
 					start_x[count] = e.getX();
 					start_y[count] = e.getY();
+					startX.setText(Integer.toString(start_x[count]));
 				}
 
 				@Override
@@ -175,9 +212,10 @@ public class base extends JFrame{
 					end_x[count] = e.getX();
 					end_y[count] = e.getY();
 					width[count] = end_x[count] - start_x[count];
-					height[count] = end_y[count] = start_y[count];
+					height[count] = end_y[count] - start_y[count];
 					if((width[count] > 0) && (height[count] > 0))
 						count++;
+					repaint();
 				}
 				
 				@Override
@@ -186,17 +224,15 @@ public class base extends JFrame{
 				
 				@Override
 				public void mouseMoved(MouseEvent arg0) {
-					
 				}
 			});
 		}
 		
 		public void paintComponent(Graphics g){
 			super.paintComponent(g);
-			repaint();
 			
 			for(int i=0; i<count; i++){
-				button[i] = new JButton("버튼"+i);
+				button[i] = new MyButton("버튼"+i);
 				button[i].setSize(width[i],height[i]);
 				button[i].setLocation(start_x[i],start_y[i]);
 				PanelEditor.add(button[i]);
