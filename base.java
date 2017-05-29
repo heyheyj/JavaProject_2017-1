@@ -3,8 +3,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 class MyButton extends JButton{
+	
 	MyButton(String s){
 		super(s);
+		
+		Color c = super.getBackground();
 		addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -16,8 +19,7 @@ class MyButton extends JButton{
 			}
 
 			@Override
-			public void mouseExited(MouseEvent arg0) {
-
+			public void mouseExited(MouseEvent e) {
 			}
 
 			@Override
@@ -27,7 +29,7 @@ class MyButton extends JButton{
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-
+				setBackground(c);
 			}
 			
 			@Override
@@ -181,8 +183,6 @@ public class base extends JFrame{
 		int end_y[] = new int[MAX_OBJECT];
 		int width[] = new int[MAX_OBJECT];
 		int height[] = new int[MAX_OBJECT];
-		int assi_x, assi_y;
-		int assi_count = 0;
 		int count=0;
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
@@ -223,7 +223,7 @@ public class base extends JFrame{
 				}
 				
 				@Override
-				public void mouseMoved(MouseEvent arg0) {
+				public void mouseMoved(MouseEvent e) {
 				}
 			});
 		}
