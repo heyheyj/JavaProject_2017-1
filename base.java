@@ -1,9 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+
+class Rectangle{
+	
+}
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
+	JPanel PanelAttribute;
+	EditorPanel PanelEditor;
+	JTextField startX;
+	JButton button[] = new JButton[MAX_OBJECT];
+	
 	base(){
 		Dimension dim = new Dimension(1500,1000);
 		setPreferredSize(dim);
@@ -62,7 +72,7 @@ public class base extends JFrame{
 		
 		
 		// 속성 패널구현
-		JPanel PanelAttribute = new JPanel();
+		PanelAttribute = new JPanel();
 		PanelAttribute.setLayout(new BoxLayout(PanelAttribute, BoxLayout.Y_AXIS));
 		
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
@@ -71,7 +81,7 @@ public class base extends JFrame{
 		JLabel LstartX = new JLabel("시작 x,y 좌표 : ");
 		box1.add(LstartX);
 		LstartX.setSize(15, 10);
-		JTextField startX = new JTextField(5);
+		startX = new JTextField(5);
 		box1.add(startX);
 		JTextField startY = new JTextField(5);
 		box1.add(startY);
@@ -118,7 +128,7 @@ public class base extends JFrame{
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,100)));
 		
 		// editor 패널 구현
-		EditorPanel PanelEditor = new EditorPanel();
+		PanelEditor = new EditorPanel();
 		PanelEditor.add(new JLabel("Editor Pane"));
 		
 		//frame 전체를 BorderLayout으로 설정
@@ -131,8 +141,12 @@ public class base extends JFrame{
 	}
 	
 	private class EditorPanel extends JPanel{ // editor 패널 동작 구현
-		int x[] = new int[MAX_OBJECT];
-		int y[] = new int[MAX_OBJECT];
+		int start_x[] = new int[MAX_OBJECT];
+		int start_y[] = new int[MAX_OBJECT];
+		int end_x[] = new int[MAX_OBJECT];
+		int end_y[] = new int[MAX_OBJECT];
+		int width[] = new int[MAX_OBJECT];
+		int height[] = new int[MAX_OBJECT];
 		int count=0;
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
@@ -152,19 +166,22 @@ public class base extends JFrame{
 
 				@Override
 				public void mousePressed(MouseEvent e) {
-					x[count] = e.getX();
-					y[count] = e.getY();
-					count++;
+					start_x[count] = e.getX();
+					start_y[count] = e.getY();
 				}
 
 				@Override
-				public void mouseReleased(MouseEvent arg0) {
-
+				public void mouseReleased(MouseEvent e) {
+					end_x[count] = e.getX();
+					end_y[count] = e.getY();
+					width[count] = end_x[count] - start_x[count];
+					height[count] = end_y[count] = start_y[count];
+					if((width[count] > 0) && (height[count] > 0))
+						count++;
 				}
 				
 				@Override
-				public void mouseDragged(MouseEvent arg0) {
-					
+				public void mouseDragged(MouseEvent e) {
 				}
 				
 				@Override
@@ -177,8 +194,13 @@ public class base extends JFrame{
 		public void paintComponent(Graphics g){
 			super.paintComponent(g);
 			repaint();
-			for(int i=0; i<count; i++)
-				g.drawRect(x[i], y[i], 50, 50);
+			
+			for(int i=0; i<count; i++){
+				button[i] = new JButton("버튼"+i);
+				button[i].setSize(width[i],height[i]);
+				button[i].setLocation(start_x[i],start_y[i]);
+				PanelEditor.add(button[i]);
+			}
 		}
 	}
 	
@@ -201,8 +223,9 @@ public class base extends JFrame{
 	}
 	private class AttrListener1 implements TextListener{
 		@Override
-		public void textValueChanged(TextEvent arg0) {
-			
+		public void textValueChanged(TextEvent e) {
+			if(e.getSource() == startX){
+			}
 		}
 	}
 	private class AttrListener2 implements ItemListener{
