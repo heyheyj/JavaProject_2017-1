@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
@@ -144,6 +145,8 @@ public class base extends JFrame{
 		int width, height;
 		int move_index;
 		int size_index;
+		int pressed_index;
+		boolean pressed;
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
 				@Override
@@ -167,19 +170,25 @@ public class base extends JFrame{
 					move_index = -1;
 					size_index = -1;
 					for(int i=0; i<count; i++){
-							if((rect[i].startX+5) < e.getX() && e.getX() < (rect[i].startX + rect[i].width - 5)){
-							if((rect[i].startY+5) < e.getY() && e.getY() < (rect[i].startY + rect[i].height - 5)){
+						if(((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width)) && 
+						   ((rect[i].startY < e.getY()) && (e.getY() < rect[i].startY + rect[i].height))){
+							pressed_index = i;
+							pressed = true;
+						}
+						
+						
+							if((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width - (rect[i].width*(0.1))) &&
+								(rect[i].startY < e.getY()) && (e.getY() < rect[i].startY + rect[i].height - (rect[i].height*(0.1)))){
 								move_index = i;
-								}
-							}else if((rect[i].startX == e.getX()) && (e.getX() < rect[i].startX) && (rect[i].startX < e.getX() + 5)){
-								  if((rect[i].startY == e.getY()) && (e.getY() < rect[i].startY) && (rect[i].startY < e.getY() + 5))
-									  size_index = i;
-							}/*else{
+							}else if( (rect[i].startX + rect[i].width - (rect[i].width*(0.1)) <= e.getX()) && (e.getX() <= rect[i].startX + rect[i].width) || 
+									(rect[i].startY + rect[i].height - (rect[i].height*(0.1)) <= e.getY()) && (e.getY() <= rect[i].startY + rect[i].height)){
+								size_index = i;
+							}else{
 							     move_index = -1;
 							     size_index = -1;
-						    }*/
+						    }
 					}
-					
+					repaint();
 				}
 
 				@Override
@@ -196,8 +205,19 @@ public class base extends JFrame{
 						rect[move_index].startX = e.getX() - (rect[move_index].width / 2);
 						rect[move_index].startY = e.getY() - (rect[move_index].height / 2);
 					}else if(size_index >=0){
-						//rect[size_index].width = ;
+						    int temp_width, temp_height;
+						    temp_width = rect[size_index].width;
+							temp_height = rect[size_index].height;
+							
+							rect[size_index].width += (end_X - start_X);
+							rect[size_index].height += (end_Y - start_Y);
+							
+							if(rect[size_index].width < 0 || rect[size_index].height < 0){
+								rect[size_index].width = temp_width;
+								rect[size_index].height = temp_height;
+							}
 					}
+					pressed = false;
 					repaint();
 				}
 				
@@ -222,7 +242,11 @@ public class base extends JFrame{
 					rect[i].startX = start_X;
 					rect[i].startY = start_Y;
 				}
-				g.drawRect(rect[i].startX, rect[i].startY, rect[i].width, rect[i].height);
+				if(pressed == true && i == pressed_index){
+					g.fillRect(rect[pressed_index].startX, rect[pressed_index].startY, rect[pressed_index].width, rect[pressed_index].height);
+				}else{
+					g.drawRect(rect[i].startX, rect[i].startY, rect[i].width, rect[i].height);
+				}
 			}
 		}
 	}
