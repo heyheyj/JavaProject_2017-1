@@ -138,46 +138,6 @@ public class base extends JFrame{
 		pack();
 	}
 	
-	class MyButton extends JButton{
-		MyButton(String s){
-			super(s);
-			
-			Color c = super.getBackground();
-			addMouseListener(new MouseAdapter(){
-				@Override
-				public void mouseClicked(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent arg0) {
-
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-				}
-
-				@Override
-				public void mousePressed(MouseEvent e) {
-					setBackground(Color.BLACK);
-				}
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					setBackground(c);
-				}
-				
-				@Override
-				public void mouseDragged(MouseEvent e) {
-				}
-				
-				@Override
-				public void mouseMoved(MouseEvent arg0) {
-				}
-			});
-		}
-	}
-	
 	private class EditorPanel extends JPanel{ // editor 패널 동작 구현
 		int start_X, start_Y;
 		int end_X, end_Y;
@@ -227,8 +187,6 @@ public class base extends JFrame{
 					end_X = e.getX();
 					end_Y = e.getY();
 					if(move_index < 0 && size_index < 0){
-						end_X = e.getX();
-						end_Y = e.getY();
 						width = end_X - start_X;
 						height = end_Y - start_Y;
 						if((width > 0) && (height > 0))
