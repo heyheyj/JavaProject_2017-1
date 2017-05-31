@@ -2,53 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-class MyButton extends JButton{
-	
-	MyButton(String s){
-		super(s);
-		
-		Color c = super.getBackground();
-		addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				setBackground(Color.BLACK);
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				setBackground(c);
-			}
-			
-			@Override
-			public void mouseDragged(MouseEvent e) {
-			}
-			
-			@Override
-			public void mouseMoved(MouseEvent arg0) {
-			}
-		});
-	}
-}
-
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
 	JPanel PanelAttribute;
-	EditorPanel PanelEditor;
+	public EditorPanel PanelEditor;
 	JTextField startX;
-	MyButton button[] = new MyButton[MAX_OBJECT];
+	RectInfo rect[] = new RectInfo[MAX_OBJECT];
+	public int count=0;
 	
 	base(){
 		Dimension dim = new Dimension(1500,1000);
@@ -148,7 +108,9 @@ public class base extends JFrame{
 		PanelAttribute.add(box5);
 		box5.add(new JLabel("타입 : "));
 		JComboBox compType = new JComboBox();
-		compType.addItem("");
+		compType.addItem("JButton");
+		compType.addItem("JLabel");
+		compType.addItem("JTextField");
 		box5.add(compType);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
@@ -176,14 +138,52 @@ public class base extends JFrame{
 		pack();
 	}
 	
+	class MyButton extends JButton{
+		MyButton(String s){
+			super(s);
+			
+			Color c = super.getBackground();
+			addMouseListener(new MouseAdapter(){
+				@Override
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					setBackground(Color.BLACK);
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					setBackground(c);
+				}
+				
+				@Override
+				public void mouseDragged(MouseEvent e) {
+				}
+				
+				@Override
+				public void mouseMoved(MouseEvent arg0) {
+				}
+			});
+		}
+	}
+	
 	private class EditorPanel extends JPanel{ // editor 패널 동작 구현
-		int start_x[] = new int[MAX_OBJECT];
-		int start_y[] = new int[MAX_OBJECT];
-		int end_x[] = new int[MAX_OBJECT];
-		int end_y[] = new int[MAX_OBJECT];
-		int width[] = new int[MAX_OBJECT];
-		int height[] = new int[MAX_OBJECT];
-		int count=0;
+		int start_X, start_Y;
+		int end_X, end_Y;
+		int width, height;
+		int move_index;
+		int size_index;
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
 				@Override
@@ -202,19 +202,44 @@ public class base extends JFrame{
 
 				@Override
 				public void mousePressed(MouseEvent e) {
-					start_x[count] = e.getX();
-					start_y[count] = e.getY();
-					startX.setText(Integer.toString(start_x[count]));
+					start_X = e.getX();
+					start_Y = e.getY();
+					move_index = -1;
+					size_index = -1;
+					for(int i=0; i<count; i++){
+							if((rect[i].startX+5) < e.getX() && e.getX() < (rect[i].startX + rect[i].width - 5)){
+							if((rect[i].startY+5) < e.getY() && e.getY() < (rect[i].startY + rect[i].height - 5)){
+								move_index = i;
+								}
+							}else if((rect[i].startX == e.getX()) && (e.getX() < rect[i].startX) && (rect[i].startX < e.getX() + 5)){
+								  if((rect[i].startY == e.getY()) && (e.getY() < rect[i].startY) && (rect[i].startY < e.getY() + 5))
+									  size_index = i;
+							}/*else{
+							     move_index = -1;
+							     size_index = -1;
+						    }*/
+					}
+					
 				}
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					end_x[count] = e.getX();
-					end_y[count] = e.getY();
-					width[count] = end_x[count] - start_x[count];
-					height[count] = end_y[count] - start_y[count];
-					if((width[count] > 0) && (height[count] > 0))
-						count++;
+					end_X = e.getX();
+					end_Y = e.getY();
+					if(move_index < 0 && size_index < 0){
+						end_X = e.getX();
+						end_Y = e.getY();
+						width = end_X - start_X;
+						height = end_Y - start_Y;
+						if((width > 0) && (height > 0))
+							count++;
+					}
+					else if(move_index >= 0){
+						rect[move_index].startX = e.getX() - (rect[move_index].width / 2);
+						rect[move_index].startY = e.getY() - (rect[move_index].height / 2);
+					}else if(size_index >=0){
+						//rect[size_index].width = ;
+					}
 					repaint();
 				}
 				
@@ -232,14 +257,26 @@ public class base extends JFrame{
 			super.paintComponent(g);
 			
 			for(int i=0; i<count; i++){
-				button[i] = new MyButton("버튼"+i);
-				button[i].setSize(width[i],height[i]);
-				button[i].setLocation(start_x[i],start_y[i]);
-				PanelEditor.add(button[i]);
+				if(rect[i] == null){
+					rect[i] = new RectInfo();
+					rect[i].width = width;
+					rect[i].height = height;
+					rect[i].startX = start_X;
+					rect[i].startY = start_Y;
+				}
+				g.drawRect(rect[i].startX, rect[i].startY, rect[i].width, rect[i].height);
 			}
 		}
 	}
 	
+	
+	class RectInfo{
+		int startX,startY;
+		int width, height;
+		String txt;
+		String type;
+		String varName;
+	}
 	
 	private class MenuListener implements ActionListener{
 		@Override
