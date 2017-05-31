@@ -7,7 +7,7 @@ public class base extends JFrame{
 	final int MAX_OBJECT = 100;
 	JPanel PanelAttribute;
 	public EditorPanel PanelEditor;
-	JTextField startX;
+	JTextField startX,startY,Width,Height;
 	RectInfo rect[] = new RectInfo[MAX_OBJECT];
 	public int count=0;
 	
@@ -80,22 +80,22 @@ public class base extends JFrame{
 		LstartX.setSize(15, 10);
 		startX = new JTextField(5);
 		box1.add(startX);
-		JTextField startY = new JTextField(5);
+		startY = new JTextField(5);
 		box1.add(startY);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box2 = Box.createHorizontalBox();
 		PanelAttribute.add(box2);
 		box2.add(new JLabel("너비 :" ));
-		JTextField wide = new JTextField(5);
-		box2.add(wide);
+		Width = new JTextField(5);
+		box2.add(Width);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box3 = Box.createHorizontalBox();
 		PanelAttribute.add(box3);
 		box3.add(new JLabel("높이 :" ));
-		JTextField height = new JTextField(5);
-		box3.add(height);
+		Height = new JTextField(5);
+		box3.add(Height);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box4 = Box.createHorizontalBox();
@@ -165,6 +165,15 @@ public class base extends JFrame{
 
 				@Override
 				public void mousePressed(MouseEvent e) {
+					for(int i=0; i<count; i++){
+						if(e.equals(rect[i])){
+							startX.setText(String.valueOf(rect[i].startX));
+							startY.setText(String.valueOf(rect[i].startY));
+							Width.setText(String.valueOf(rect[i].width));
+							Height.setText(String.valueOf(rect[i].height));
+						}
+					}
+					
 					start_X = e.getX();
 					start_Y = e.getY();
 					move_index = -1;
@@ -173,6 +182,10 @@ public class base extends JFrame{
 						if(((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width)) && 
 						   ((rect[i].startY < e.getY()) && (e.getY() < rect[i].startY + rect[i].height))){
 							pressed_index = i;
+							startX.setText(String.valueOf(rect[i].startX));
+							startY.setText(String.valueOf(rect[i].startY));
+							Width.setText(String.valueOf(rect[i].width));
+							Height.setText(String.valueOf(rect[i].height));
 							pressed = true;
 						}
 						
@@ -195,6 +208,7 @@ public class base extends JFrame{
 				public void mouseReleased(MouseEvent e) {
 					end_X = e.getX();
 					end_Y = e.getY();
+				
 					if(move_index < 0 && size_index < 0){
 						width = end_X - start_X;
 						height = end_Y - start_Y;
@@ -296,3 +310,4 @@ public class base extends JFrame{
 		new base();	
 	}
 }
+
