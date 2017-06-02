@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
@@ -289,8 +291,48 @@ public class base extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			if(e.getActionCommand() == "닫기(C)")
 				System.exit(1);
-		}
+			
+			if(e.getActionCommand() == ".java파일 생성(J)"){
+				FileWriter fout = null;
+				try {
+					fout = new FileWriter("D:\\test.java");
+				    String java_code = "";
+				    String[] base_code1 = {"import javax.swing.*;\r\n",
+					    	               "public class test extends JFrame{\r\n",
+						                   "	test(){\r\n",
+						                   "		setTitle(\"test\");\r\n",
+						                   "		setSize(800,800);\r\n",
+						                   "		setLayout(null);\r\n",
+						                   "		setVisible(true);\r\n"};
+				    for(int i=0; i<base_code1.length; i++){
+				    	java_code = java_code.concat(base_code1[i]);
+				    }
+				    for(int i=0; i<count; i++){
+					    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\"\");\r\n",
+				                              "		b.setLocation("+rect[i].startX+","+rect[i].startY+");\r\n", 
+				      		                  "		b.setSize(+"+rect[i].width+","+rect[i].height+");\r\n",
+				      		                  "		add("+rect[i].varName+");\r\n"};
+					    for(int j=0; j<inst_code.length; j++){
+					    	java_code = java_code.concat(inst_code[j]);
+					    }
+				    }
+				    String[] base_code2 = {"	}\r\n",
+					    	               "	public static void main(String[] args) {\r\n",
+						                   "		new test();\r\n",
+						                   "	}\r\n",
+						                   "}"};
+				    for(int i=0; i<base_code2.length; i++){
+				    	java_code = java_code.concat(base_code2[i]);
+				    }
+				    fout.write(java_code);
+				    fout.close();
+				    } catch (IOException e1) {
+				    	e1.printStackTrace();
+				    	}
+				}
+			}
 	}
+	
 	private class ToolbarListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
