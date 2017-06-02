@@ -7,7 +7,7 @@ public class base extends JFrame{
 	final int MAX_OBJECT = 100;
 	JPanel PanelAttribute;
 	public EditorPanel PanelEditor;
-	JTextField startX,startY,Width,Height;
+	JTextField startX,startY,Width,Height,compName;
 	RectInfo rect[] = new RectInfo[MAX_OBJECT];
 	public int count=0;
 	
@@ -118,7 +118,7 @@ public class base extends JFrame{
 		Box box6 = Box.createHorizontalBox();
 		PanelAttribute.add(box6);
 		box6.add(new JLabel("변수명 : "));
-		JTextField compName = new JTextField(15);
+		compName = new JTextField(15);
 		box6.add(compName);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
@@ -143,14 +143,16 @@ public class base extends JFrame{
 		int start_X, start_Y;
 		int end_X, end_Y;
 		int width, height;
-		int move_index;
-		int size_index;
+		int move_index = -1;
+		int size_index = -1;
 		int pressed_index;
 		boolean pressed;
+		
 		EditorPanel(){
 			addMouseListener(new MouseAdapter(){
 				@Override
 				public void mouseClicked(MouseEvent e) {
+		
 				}
 
 				@Override
@@ -165,48 +167,30 @@ public class base extends JFrame{
 
 				@Override
 				public void mousePressed(MouseEvent e) {
-					for(int i=0; i<count; i++){
-						if(e.equals(rect[i])){
-							startX.setText(String.valueOf(rect[i].startX));
-							startY.setText(String.valueOf(rect[i].startY));
-							Width.setText(String.valueOf(rect[i].width));
-							Height.setText(String.valueOf(rect[i].height));
-						}
-					}
-					
 					start_X = e.getX();
 					start_Y = e.getY();
-					move_index = -1;
-					size_index = -1;
 					for(int i=0; i<count; i++){
 						if(((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width)) && 
 						   ((rect[i].startY < e.getY()) && (e.getY() < rect[i].startY + rect[i].height))){
 							pressed_index = i;
-							startX.setText(String.valueOf(rect[i].startX));
-							startY.setText(String.valueOf(rect[i].startY));
-							Width.setText(String.valueOf(rect[i].width));
-							Height.setText(String.valueOf(rect[i].height));
+							ShowAttr();
 							pressed = true;
 						}
-						
-						
-							if((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width - (rect[i].width*(0.1))) &&
+						if((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width - (rect[i].width*(0.1))) &&
 								(rect[i].startY < e.getY()) && (e.getY() < rect[i].startY + rect[i].height - (rect[i].height*(0.1)))){
 								move_index = i;
 							}else if( (rect[i].startX + rect[i].width - (rect[i].width*(0.1)) <= e.getX()) && (e.getX() <= rect[i].startX + rect[i].width) || 
 									(rect[i].startY + rect[i].height - (rect[i].height*(0.1)) <= e.getY()) && (e.getY() <= rect[i].startY + rect[i].height)){
 								size_index = i;
-							}else{
-							     move_index = -1;
-							     size_index = -1;
-						    }
-					}
+							}	
+					}	
 					repaint();
 				}
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					end_X = e.getX();
+				
+				 	end_X = e.getX();
 					end_Y = e.getY();
 				
 					if(move_index < 0 && size_index < 0){
@@ -218,6 +202,7 @@ public class base extends JFrame{
 					else if(move_index >= 0){
 						rect[move_index].startX = e.getX() - (rect[move_index].width / 2);
 						rect[move_index].startY = e.getY() - (rect[move_index].height / 2);
+						ShowAttr();
 					}else if(size_index >=0){
 						    int temp_width, temp_height;
 						    temp_width = rect[size_index].width;
@@ -230,9 +215,16 @@ public class base extends JFrame{
 								rect[size_index].width = temp_width;
 								rect[size_index].height = temp_height;
 							}
+		
+							ShowAttr();
 					}
+					
+					size_index = -1;
+					move_index = -1;
+					
 					pressed = false;
 					repaint();
+					
 				}
 				
 				@Override
@@ -240,9 +232,17 @@ public class base extends JFrame{
 				}
 				
 				@Override
-				public void mouseMoved(MouseEvent e) {
+				public void mouseMoved(MouseEvent e) {				
 				}
-			});
+		});
+	}
+		
+		void ShowAttr(){
+			startX.setText(String.valueOf(rect[pressed_index].startX));
+			startY.setText(String.valueOf(rect[pressed_index].startY));
+			Width.setText(String.valueOf(rect[pressed_index].width));
+			Height.setText(String.valueOf(rect[pressed_index].height));
+			compName.setText(rect[pressed_index].varName);
 		}
 		
 		public void paintComponent(Graphics g){
@@ -250,28 +250,38 @@ public class base extends JFrame{
 			
 			for(int i=0; i<count; i++){
 				if(rect[i] == null){
-					rect[i] = new RectInfo();
+					rect[i] = new RectInfo(i+"번째 사각형");
 					rect[i].width = width;
 					rect[i].height = height;
 					rect[i].startX = start_X;
 					rect[i].startY = start_Y;
+					pressed_index = i;
+					ShowAttr();
 				}
+				
 				if(pressed == true && i == pressed_index){
-					g.fillRect(rect[pressed_index].startX, rect[pressed_index].startY, rect[pressed_index].width, rect[pressed_index].height);
+					g.fillRect(rect[pressed_index].startX, rect[pressed_index].startY,rect[pressed_index].width, rect[pressed_index].height);
 				}else{
 					g.drawRect(rect[i].startX, rect[i].startY, rect[i].width, rect[i].height);
 				}
+				
 			}
 		}
 	}
-	
 	
 	class RectInfo{
 		int startX,startY;
 		int width, height;
 		String txt;
-		String type;
+		String type = "JButton";
 		String varName;
+		
+		RectInfo(){
+		}
+		
+		RectInfo(String name){
+			varName = name;
+		}
 	}
 	
 	private class MenuListener implements ActionListener{
