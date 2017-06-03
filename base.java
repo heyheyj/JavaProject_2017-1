@@ -2,82 +2,109 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
 	JPanel PanelAttribute;
+	JMenu FileMenu;
+	JMenuItem NewFile, Open, Save, SaveName, NewJava, Close;
+	JButton NewFileButton, OpenButton, SaveButton, SaveNameButton, NewJavaButton, CloseButton;
 	public EditorPanel PanelEditor;
 	JTextField startX,startY,Width,Height,compName;
 	RectInfo rect[] = new RectInfo[MAX_OBJECT];
 	public int count=0;
 	
 	base(){
-		Dimension dim = new Dimension(1500,1000);
+		
+		Dimension dim = new Dimension(1100,1000);
 		setPreferredSize(dim);
 		setLocation(10,0);
 		setTitle("base");
-		setVisible(true);
 		setDefaultCloseOperation(base.EXIT_ON_CLOSE);
+		setVisible(true);
 		
-		// ë©”ë‰´ë°”êµ¬í˜„
+		
+		// ¸Ş´º¹Ù±¸Çö
 		JMenuBar MenuBar = new JMenuBar();
 			
-		JMenu filemenu = new JMenu("íŒŒì¼(F)");
-		filemenu.setMnemonic('F');
+		FileMenu = new JMenu("ÆÄÀÏ(F)");
+		FileMenu.setMnemonic('F');
 			
-		JMenuItem newfile = new JMenuItem("ìƒˆë¡œ ë§Œë“¤ê¸°(N)");
-		newfile.setMnemonic('N');
-		filemenu.add(newfile);
-		newfile.addActionListener(new MenuListener());
+		NewFile = new JMenuItem("»õ·Î ¸¸µé±â(N)");
+		NewFile.setMnemonic('N');
+		FileMenu.add(NewFile);
 		
-		JMenuItem open = new JMenuItem("ì—´ê¸°(O)");
-		open.setMnemonic('O');
-		filemenu.add(open);
-		open.addActionListener(new MenuListener());
+		Open = new JMenuItem("¿­±â(O)");
+		Open.setMnemonic('O');
+		FileMenu.add(Open);
 		
-		JMenuItem save = new JMenuItem("ì €ì¥(S)");
-		save.setMnemonic('S');
-		filemenu.add(save);
-		save.addActionListener(new MenuListener());
+		Save = new JMenuItem("ÀúÀå(S)");
+		Save.setMnemonic('S');
+		FileMenu.add(Save);
 		
-		JMenuItem saveName = new JMenuItem("ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥(A)");
-		saveName.setMnemonic('A');
-		filemenu.add(saveName);
-		saveName.addActionListener(new MenuListener());
+		SaveName = new JMenuItem("´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå(A)");
+		SaveName.setMnemonic('A');
+		FileMenu.add(SaveName);
 		
-		JMenuItem newJava = new JMenuItem(".javaíŒŒì¼ ìƒì„±(J)");
-		newJava.setMnemonic('J');
-		filemenu.add(newJava);
-		newJava.addActionListener(new MenuListener());
+		NewJava = new JMenuItem(".javaÆÄÀÏ »ı¼º(J)");
+		NewJava.setMnemonic('J');
+		FileMenu.add(NewJava);
 		
-		JMenuItem close = new JMenuItem("ë‹«ê¸°(C)");
-		close.setMnemonic('C');
-		filemenu.add(close);
-		MenuBar.add(filemenu);
-		close.addActionListener(new MenuListener());
+		Close = new JMenuItem("´İ±â(C)");
+		Close.setMnemonic('C');
+		FileMenu.add(Close);
 		
+		MenuBar.add(FileMenu);
 		setJMenuBar(MenuBar);
 		
-		// íˆ´ë°”êµ¬í˜„
+		
+		// Åø¹Ù±¸Çö
 		JToolBar ToolBar = new JToolBar();
-		ToolBar.add(new JButton("ìƒˆë¡œ ë§Œë“¤ê¸°"));
-		ToolBar.add(new JButton("ì—´ê¸°"));
-		ToolBar.add(new JButton("ì €ì¥"));
-		ToolBar.add(new JButton("ë‹¤ë¥¸ ì´ë¦„ìœ¼ë¡œ ì €ì¥"));
-		ToolBar.add(new JButton(".java íŒŒì¼ ìƒì„±"));
-		ToolBar.add(new JButton("ë‹«ê¸°"));
+		
+		ImageIcon newfile = new ImageIcon("images/newfile.png");
+		NewFileButton = new JButton(newfile);
+		ImageIcon open = new ImageIcon("images/open.png");
+		OpenButton = new JButton(open);
+		ImageIcon save = new ImageIcon("images/save.png");
+		SaveButton = new JButton(save);
+		SaveNameButton = new JButton("´Ù¸¥ ÀÌ¸§À¸·Î ÀúÀå");
+		NewJavaButton = new JButton(".java ÆÄÀÏ »ı¼º");
+		CloseButton = new JButton("´İ±â");
+		
+		ToolBar.add(NewFileButton);
+		ToolBar.add(OpenButton);
+		ToolBar.add(SaveButton);
+		ToolBar.add(SaveNameButton);
+		ToolBar.add(NewJavaButton);
+		ToolBar.add(CloseButton);
 		
 		
-		// ì†ì„± íŒ¨ë„êµ¬í˜„
+		MyActionListener listener = new MyActionListener();
+		//¸Ş´º¹Ù ¸®½º³Ê
+		NewFile.addActionListener(listener);
+		Open.addActionListener(listener);
+		Save.addActionListener(listener);
+		SaveName.addActionListener(listener);
+		NewJava.addActionListener(listener);
+		Close.addActionListener(listener);
+		//Åø¹Ù ¸®½º³Ê
+		NewFileButton.addActionListener(listener);
+		OpenButton.addActionListener(listener);
+		SaveButton.addActionListener(listener);
+		SaveNameButton.addActionListener(listener);
+		NewJavaButton.addActionListener(listener);
+		CloseButton.addActionListener(listener);
+		
+	
+		
+		// ¼Ó¼º ÆĞ³Î±¸Çö
 		PanelAttribute = new JPanel();
 		PanelAttribute.setLayout(new BoxLayout(PanelAttribute, BoxLayout.Y_AXIS));
 		
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		Box box1 = Box.createHorizontalBox();
 		PanelAttribute.add(box1);
-		JLabel LstartX = new JLabel("ì‹œì‘ x,y ì¢Œí‘œ : ");
+		JLabel LstartX = new JLabel("½ÃÀÛ x,y ÁÂÇ¥ : ");
 		box1.add(LstartX);
 		LstartX.setSize(15, 10);
 		startX = new JTextField(5);
@@ -88,28 +115,28 @@ public class base extends JFrame{
 		
 		Box box2 = Box.createHorizontalBox();
 		PanelAttribute.add(box2);
-		box2.add(new JLabel("ë„ˆë¹„ :" ));
+		box2.add(new JLabel("³Êºñ :" ));
 		Width = new JTextField(5);
 		box2.add(Width);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box3 = Box.createHorizontalBox();
 		PanelAttribute.add(box3);
-		box3.add(new JLabel("ë†’ì´ :" ));
+		box3.add(new JLabel("³ôÀÌ :" ));
 		Height = new JTextField(5);
 		box3.add(Height);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box4 = Box.createHorizontalBox();
 		PanelAttribute.add(box4);
-		box4.add(new JLabel("í…ìŠ¤íŠ¸ ì†ì„±ê°’ : "));
+		box4.add(new JLabel("ÅØ½ºÆ® ¼Ó¼º°ª : "));
 		JTextField txtAttr = new JTextField(15);
 		box4.add(txtAttr);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
 		Box box5 = Box.createHorizontalBox();
 		PanelAttribute.add(box5);
-		box5.add(new JLabel("íƒ€ì… : "));
+		box5.add(new JLabel("Å¸ÀÔ : "));
 		JComboBox compType = new JComboBox();
 		compType.addItem("JButton");
 		compType.addItem("JLabel");
@@ -119,29 +146,28 @@ public class base extends JFrame{
 		
 		Box box6 = Box.createHorizontalBox();
 		PanelAttribute.add(box6);
-		box6.add(new JLabel("ë³€ìˆ˜ëª… : "));
+		box6.add(new JLabel("º¯¼ö¸í : "));
 		compName = new JTextField(15);
 		box6.add(compName);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		JButton apply = new JButton("ì ìš©");
+		JButton apply = new JButton("Àû¿ë");
 		PanelAttribute.add(apply);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,100)));
 		
-		// editor íŒ¨ë„ êµ¬í˜„
+		// editor ÆĞ³Î ±¸Çö
 		PanelEditor = new EditorPanel();
 		PanelEditor.add(new JLabel("Editor Pane"));
 		
-		//frame ì „ì²´ë¥¼ BorderLayoutìœ¼ë¡œ ì„¤ì •
+		//frame ÀüÃ¼¸¦ BorderLayoutÀ¸·Î ¼³Á¤
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		contentPane.add(ToolBar, BorderLayout.NORTH);
 		contentPane.add(PanelAttribute,BorderLayout.WEST);
 		contentPane.add(PanelEditor,BorderLayout.CENTER);
-		pack();
 	}
 	
-	private class EditorPanel extends JPanel{ // editor íŒ¨ë„ ë™ì‘ êµ¬í˜„
+	private class EditorPanel extends JPanel{ // editor ÆĞ³Î µ¿ÀÛ ±¸Çö
 		int start_X, start_Y;
 		int end_X, end_Y;
 		int width, height;
@@ -252,7 +278,7 @@ public class base extends JFrame{
 			
 			for(int i=0; i<count; i++){
 				if(rect[i] == null){
-					rect[i] = new RectInfo(i+"ë²ˆì§¸ ì‚¬ê°í˜•");
+					rect[i] = new RectInfo(i+"¹øÂ° »ç°¢Çü");
 					rect[i].width = width;
 					rect[i].height = height;
 					rect[i].startX = start_X;
@@ -286,62 +312,20 @@ public class base extends JFrame{
 		}
 	}
 	
-	private class MenuListener implements ActionListener{
+	private class MyActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getActionCommand() == "ë‹«ê¸°(C)")
-				System.exit(1);
-			
-			if(e.getActionCommand() == ".javaíŒŒì¼ ìƒì„±(J)"){
-				FileWriter fout = null;
-				try {
-					fout = new FileWriter("D:\\test.java");
-				    String java_code = "";
-				    String[] base_code1 = {"import javax.swing.*;\r\n",
-					    	               "public class test extends JFrame{\r\n",
-						                   "	test(){\r\n",
-						                   "		setTitle(\"test\");\r\n",
-						                   "		setSize(1200,900);\r\n",
-						                   "		setLayout(null);\r\n",
-						                   "		setVisible(true);\r\n"};
-				    for(int i=0; i<base_code1.length; i++){
-				    	java_code = java_code.concat(base_code1[i]);
-				    }
-				    for(int i=0; i<count; i++){
-					    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\"\");\r\n",
-				                              "		b.setLocation("+rect[i].startX+","+rect[i].startY+");\r\n", 
-				      		                  "		b.setSize(+"+rect[i].width+","+rect[i].height+");\r\n",
-				      		                  "		add("+rect[i].varName+");\r\n"};
-					    for(int j=0; j<inst_code.length; j++){
-					    	java_code = java_code.concat(inst_code[j]);
-					    }
-				    }
-				    String[] base_code2 = {"	}\r\n",
-					    	               "	public static void main(String[] args) {\r\n",
-						                   "		new test();\r\n",
-						                   "	}\r\n",
-						                   "}"};
-				    for(int i=0; i<base_code2.length; i++){
-				    	java_code = java_code.concat(base_code2[i]);
-				    }
-				    fout.write(java_code);
-				    fout.close();
-				    } catch (IOException e1) {
-				    	e1.printStackTrace();
-				    	}
-				}
+			if(e.getSource() == NewFileButton || e.getSource() == NewFile){
 			}
-	}
-	
-	private class ToolbarListener implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JButton b = (JButton) e.getSource();
-			if(b.getText().equals("ë‹«ê¸°"))
+			else if(e.getSource() == OpenButton || e.getSource() == Open){
+				
+			}
+			else if(e.getSource() == CloseButton || e.getSource() == Close)
 				System.exit(1);
 		}
 		
 	}
+
 	private class AttrListener1 implements TextListener{
 		@Override
 		public void textValueChanged(TextEvent e) {
