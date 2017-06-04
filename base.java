@@ -1,11 +1,12 @@
-
-		
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.json.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
@@ -401,7 +402,36 @@ public class base extends JFrame{
 				rect[pressed_index].varName = compName.getText();
 				System.out.println("ab");
 				repaint();
-			}
+			}else if(e.getSource() == Save){
+				  FileDialog saveDialog = new FileDialog(base.this,"저장",FileDialog.SAVE);
+				  saveDialog.setVisible(true);
+				  String dfName = saveDialog.getDirectory() + saveDialog.getFile();
+				  try {
+					FileWriter save_writer = new FileWriter(dfName);
+					System.out.println(dfName);
+
+					 JSONObject Jrect = new JSONObject();
+					 JSONArray JrectArray = new JSONArray();
+			            for(int i=0; i<count; i++){
+			                Jrect.put("startX", rect[i].startX);
+			                Jrect.put("startY", rect[i].startY);
+			                Jrect.put("width", rect[i].width);
+			                Jrect.put("height", rect[i].height);
+			                Jrect.put("txt", rect[i].txt);
+			                Jrect.put("type", rect[i].type);
+			                Jrect.put("varName", rect[i].varName);
+			                JrectArray.add(Jrect);
+			            }
+
+			         //내용 저장후 종료
+			         save_writer.write(JrectArray.toJSONString());
+			         save_writer.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		
+			  }
 		}	
 	    }
 
