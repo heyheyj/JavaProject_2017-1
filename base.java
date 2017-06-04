@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
@@ -15,13 +17,12 @@ public class base extends JFrame{
 	public int count=0;
 	
 	base(){
-		
-		Dimension dim = new Dimension(1100,1000);
+		Dimension dim = new Dimension(1500,1000);
 		setPreferredSize(dim);
 		setLocation(10,0);
 		setTitle("base");
-		setDefaultCloseOperation(base.EXIT_ON_CLOSE);
 		setVisible(true);
+		setDefaultCloseOperation(base.EXIT_ON_CLOSE);
 		
 		
 		// 메뉴바구현
@@ -165,6 +166,7 @@ public class base extends JFrame{
 		contentPane.add(ToolBar, BorderLayout.NORTH);
 		contentPane.add(PanelAttribute,BorderLayout.WEST);
 		contentPane.add(PanelEditor,BorderLayout.CENTER);
+		pack();
 	}
 	
 	private class EditorPanel extends JPanel{ // editor 패널 동작 구현
@@ -203,6 +205,15 @@ public class base extends JFrame{
 							pressed_index = i;
 							ShowAttr();
 							pressed = true;
+							if(e.getButton() == 3){
+								rect[pressed_index].startX = 0;
+								rect[pressed_index].startY = 0;
+								rect[pressed_index].width = 0;
+								rect[pressed_index].height = 0;
+								rect[pressed_index].txt = null;
+								rect[pressed_index].type =null;
+								rect[pressed_index].varName = null;
+							}
 						}
 						if((rect[i].startX < e.getX()) && (e.getX() < rect[i].startX + rect[i].width - (rect[i].width*(0.1))) &&
 								(rect[i].startY < e.getY()) && (e.getY() < rect[i].startY + rect[i].height - (rect[i].height*(0.1)))){
@@ -277,8 +288,12 @@ public class base extends JFrame{
 			super.paintComponent(g);
 			
 			for(int i=0; i<count; i++){
+				if(rect[i] != null){
+					if(rect[i].type == null)
+						continue;
+				}
 				if(rect[i] == null){
-					rect[i] = new RectInfo(i+"번째 사각형");
+					rect[i] = new RectInfo("component"+i);
 					rect[i].width = width;
 					rect[i].height = height;
 					rect[i].startX = start_X;
@@ -320,11 +335,50 @@ public class base extends JFrame{
 			else if(e.getSource() == OpenButton || e.getSource() == Open){
 				
 			}
-			else if(e.getSource() == CloseButton || e.getSource() == Close)
+			else if(e.getSource() == CloseButton || e.getSource() == Close){
 				System.exit(1);
-		}
-		
-	}
+			}else if(e.getSource() == NewJava || e.getSource() == NewJavaButton){
+				FileWriter fout = null;
+				try {
+					fout = new FileWriter("D:\\test.java");
+				    String java_code = "";
+				    String[] base_code1 = {"import javax.swing.*;\r\n",
+					    	               "public class test extends JFrame{\r\n",
+						                   "	test(){\r\n",
+						                   "		setTitle(\"test\");\r\n",
+						                   "		setSize(1200,900);\r\n",
+						                   "		setLayout(null);\r\n",
+						                   "		setVisible(true);\r\n"};
+				    for(int i=0; i<base_code1.length; i++){
+				    	java_code = java_code.concat(base_code1[i]);
+				    }
+				    for(int i=0; i<count; i++){
+				    	if(rect[i].type == null)
+				    		continue;
+					    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\"\");\r\n",
+				                              "		b.setLocation("+rect[i].startX+","+rect[i].startY+");\r\n", 
+				      		                  "		b.setSize("+rect[i].width+","+rect[i].height+");\r\n",
+				      		                  "		add("+rect[i].varName+");\r\n"};
+					    for(int j=0; j<inst_code.length; j++){
+					    	java_code = java_code.concat(inst_code[j]);
+					    }
+				    }
+				    String[] base_code2 = {"	}\r\n",
+					    	               "	public static void main(String[] args) {\r\n",
+						                   "		new test();\r\n",
+						                   "	}\r\n",
+						                   "}"};
+				    for(int i=0; i<base_code2.length; i++){
+				    	java_code = java_code.concat(base_code2[i]);
+				    }
+				    fout.write(java_code);
+				    fout.close();
+				    } catch (IOException e1) {
+				    	e1.printStackTrace();
+				        }
+			}
+		   }
+	    }
 
 	private class AttrListener1 implements TextListener{
 		@Override
@@ -346,4 +400,3 @@ public class base extends JFrame{
 		new base();	
 	}
 }
-
