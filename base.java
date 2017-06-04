@@ -1,3 +1,5 @@
+
+		
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -7,14 +9,14 @@ import java.io.IOException;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
+	public int count=0, pressed_index;
 	JPanel PanelAttribute;
 	JMenu FileMenu;
 	JMenuItem NewFile, Open, Save, SaveName, NewJava, Close;
-	JButton NewFileButton, OpenButton, SaveButton, SaveNameButton, NewJavaButton, CloseButton;
-	public EditorPanel PanelEditor;
-	JTextField startX,startY,Width,Height,compName;
+	JButton NewFileButton, OpenButton, SaveButton, SaveNameButton, NewJavaButton, CloseButton, ApplyButton;
+	JTextField startX,startY,Width,Height,txtAttr,compName;
 	RectInfo rect[] = new RectInfo[MAX_OBJECT];
-	public int count=0;
+	public EditorPanel PanelEditor;
 	
 	base(){
 		Dimension dim = new Dimension(1500,1000);
@@ -78,26 +80,8 @@ public class base extends JFrame{
 		ToolBar.add(SaveNameButton);
 		ToolBar.add(NewJavaButton);
 		ToolBar.add(CloseButton);
-		
-		
-		MyActionListener listener = new MyActionListener();
-		//메뉴바 리스너
-		NewFile.addActionListener(listener);
-		Open.addActionListener(listener);
-		Save.addActionListener(listener);
-		SaveName.addActionListener(listener);
-		NewJava.addActionListener(listener);
-		Close.addActionListener(listener);
-		//툴바 리스너
-		NewFileButton.addActionListener(listener);
-		OpenButton.addActionListener(listener);
-		SaveButton.addActionListener(listener);
-		SaveNameButton.addActionListener(listener);
-		NewJavaButton.addActionListener(listener);
-		CloseButton.addActionListener(listener);
-		
 	
-		
+
 		// 속성 패널구현
 		PanelAttribute = new JPanel();
 		PanelAttribute.setLayout(new BoxLayout(PanelAttribute, BoxLayout.Y_AXIS));
@@ -131,7 +115,7 @@ public class base extends JFrame{
 		Box box4 = Box.createHorizontalBox();
 		PanelAttribute.add(box4);
 		box4.add(new JLabel("텍스트 속성값 : "));
-		JTextField txtAttr = new JTextField(15);
+		txtAttr = new JTextField(15);
 		box4.add(txtAttr);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
@@ -152,13 +136,34 @@ public class base extends JFrame{
 		box6.add(compName);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,20)));
 		
-		JButton apply = new JButton("적용");
-		PanelAttribute.add(apply);
+		ApplyButton = new JButton("적용");
+		PanelAttribute.add(ApplyButton);
 		PanelAttribute.add(Box.createRigidArea(new Dimension(1,100)));
 		
 		// editor 패널 구현
 		PanelEditor = new EditorPanel();
 		PanelEditor.add(new JLabel("Editor Pane"));
+		
+		MyActionListener listener = new MyActionListener();
+		
+		//메뉴바 리스너
+		NewFile.addActionListener(listener);
+		Open.addActionListener(listener);
+		Save.addActionListener(listener);
+		SaveName.addActionListener(listener);
+		NewJava.addActionListener(listener);
+		Close.addActionListener(listener);
+		
+		//툴바 리스너
+		NewFileButton.addActionListener(listener);
+		OpenButton.addActionListener(listener);
+		SaveButton.addActionListener(listener);
+		SaveNameButton.addActionListener(listener);
+		NewJavaButton.addActionListener(listener);
+		CloseButton.addActionListener(listener);
+		
+		//적용 버튼 리스너
+		ApplyButton.addActionListener(listener);
 		
 		//frame 전체를 BorderLayout으로 설정
 		Container contentPane = getContentPane();
@@ -281,6 +286,7 @@ public class base extends JFrame{
 			startY.setText(String.valueOf(rect[pressed_index].startY));
 			Width.setText(String.valueOf(rect[pressed_index].width));
 			Height.setText(String.valueOf(rect[pressed_index].height));
+			txtAttr.setText(String.valueOf(rect[pressed_index].txt));
 			compName.setText(rect[pressed_index].varName);
 		}
 		
@@ -323,6 +329,7 @@ public class base extends JFrame{
 		}
 		
 		RectInfo(String name){
+			txt = name;
 			varName = name;
 		}
 	}
@@ -331,13 +338,20 @@ public class base extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == NewFileButton || e.getSource() == NewFile){
+				for(int i=0; i<count; i++){
+					rect[i] = null;
+				}
+				repaint();
+				count = 0;
+				
 			}
 			else if(e.getSource() == OpenButton || e.getSource() == Open){
 				
 			}
 			else if(e.getSource() == CloseButton || e.getSource() == Close){
 				System.exit(1);
-			}else if(e.getSource() == NewJava || e.getSource() == NewJavaButton){
+			}
+			else if(e.getSource() == NewJava || e.getSource() == NewJavaButton){
 				FileWriter fout = null;
 				try {
 					fout = new FileWriter("D:\\test.java");
@@ -377,7 +391,18 @@ public class base extends JFrame{
 				    	e1.printStackTrace();
 				        }
 			}
-		   }
+		   else if(e.getSource() == ApplyButton){
+			    rect[pressed_index].startX = Integer.parseInt(startX.getText());
+				/*rect[pressed_index].startY = startY.getColumns();
+			    rect[pressed_index].width = Width.getColumns();
+				rect[pressed_index].height = Height.getColumns();
+				*/
+			    rect[pressed_index].txt = txtAttr.getText();
+				rect[pressed_index].varName = compName.getText();
+				System.out.println("ab");
+				repaint();
+			}
+		}	
 	    }
 
 	private class AttrListener1 implements TextListener{
@@ -397,6 +422,6 @@ public class base extends JFrame{
 	}
 	
 	public static void main(String[] args){
-		new base();	
+		base a = new base();	
 	}
 }
