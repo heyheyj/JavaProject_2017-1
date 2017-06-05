@@ -2,11 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
+
 import org.json.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class base extends JFrame{
 	final int MAX_OBJECT = 100;
@@ -347,8 +353,50 @@ public class base extends JFrame{
 				
 			}
 			else if(e.getSource() == OpenButton || e.getSource() == Open){
-				
+				FileDialog openDialog = new FileDialog(base.this,"열기",FileDialog.LOAD);
+				  openDialog.setVisible(true);
+				  String dirName = openDialog.getDirectory() + openDialog.getFile();
+				  
+				  JSONParser parser = new JSONParser();
+				  try {
+					FileReader open_reader = new FileReader(dirName);
+					Object Jarr = parser.parse(open_reader);
+					JSONArray readJarray = (JSONArray) Jarr;
+					JSONObject readJobj = new JSONObject();
+					
+					if(readJarray != null){
+						readJobj = (JSONObject) readJarray.get(1);
+						for(int i=0; i<count; i++){
+					        rect[i] = null;
+					     }
+						count = 0;
+						
+						Iterator<JSONObject> iterator = readJarray.iterator();
+						int i = 0;
+						while(iterator.hasNext()){
+							rect[i] = new RectInfo();
+							readJobj = iterator.next();
+							rect[i].startX = Integer.parseInt(String.valueOf(readJobj.get("startX")));
+							rect[i].startY = Integer.parseInt(String.valueOf(readJobj.get("startY")));
+							rect[i].width = Integer.parseInt(String.valueOf(readJobj.get("width")));
+							rect[i].height = Integer.parseInt(String.valueOf(readJobj.get("height")));
+							rect[i].txt = String.valueOf(readJobj.get("txt"));
+							rect[i].type = String.valueOf(readJobj.get("type"));
+							rect[i].varName = String.valueOf(readJobj.get("varName"));
+							i++;
+							count++;
+					}
+						repaint();
+					}
+					open_reader.close();
+				} catch (IOException | ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
+				  
+				  
+				  
 			else if(e.getSource() == CloseButton || e.getSource() == Close){
 				System.exit(1);
 			}
@@ -408,30 +456,28 @@ public class base extends JFrame{
 				  String dfName = saveDialog.getDirectory() + saveDialog.getFile();
 				  try {
 					FileWriter save_writer = new FileWriter(dfName);
-					System.out.println(dfName);
 
-					 JSONObject Jrect = new JSONObject();
+					 JSONObject[] Jrect = new JSONObject[MAX_OBJECT];
 					 JSONArray JrectArray = new JSONArray();
 			            for(int i=0; i<count; i++){
-			                Jrect.put("startX", rect[i].startX);
-			                Jrect.put("startY", rect[i].startY);
-			                Jrect.put("width", rect[i].width);
-			                Jrect.put("height", rect[i].height);
-			                Jrect.put("txt", rect[i].txt);
-			                Jrect.put("type", rect[i].type);
-			                Jrect.put("varName", rect[i].varName);
-			                JrectArray.add(Jrect);
+			            	Jrect[i] = new JSONObject();
+			                Jrect[i].put("startX", rect[i].startX);
+			                Jrect[i].put("startY", rect[i].startY);
+			                Jrect[i].put("width", rect[i].width);
+			                Jrect[i].put("height", rect[i].height);
+			                Jrect[i].put("txt", rect[i].txt);
+			                Jrect[i].put("type", rect[i].type);
+			                Jrect[i].put("varName", rect[i].varName);
+			                JrectArray.add(i, Jrect[i]);
 			            }
 
 			         //내용 저장후 종료
 			         save_writer.write(JrectArray.toJSONString());
 			         save_writer.close();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-		
-			  }
+			}
 		}	
 	    }
 
