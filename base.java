@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import org.json.*;
 import org.json.simple.JSONArray;
@@ -395,14 +396,19 @@ public class base extends JFrame{
 				System.exit(1);
 			}
 			else if(e.getSource() == NewJava || e.getSource() == NewJavaButton){
-				FileWriter fout = null;
+				FileDialog JsaveDialog = new FileDialog(base.this,".java颇老 积己",FileDialog.SAVE);
+				JsaveDialog.setVisible(true);
+				String dirName = JsaveDialog.getDirectory() + JsaveDialog.getFile();
+				
+				 StringTokenizer st = new StringTokenizer(JsaveDialog.getFile(), ".");
+				 String class_name = st.nextToken();
 				try {
-					fout = new FileWriter("D:\\test.java");
+					FileWriter fout = new FileWriter(dirName);
 				    String java_code = "";
 				    String[] base_code1 = {"import javax.swing.*;\r\n",
-					    	               "public class test extends JFrame{\r\n",
-						                   "	test(){\r\n",
-						                   "		setTitle(\"test\");\r\n",
+					    	               "public class "+class_name+" extends JFrame{\r\n",
+						                   "	"+class_name+"(){\r\n",
+						                   "		setTitle(\""+class_name+"\");\r\n",
 						                   "		setSize(1200,900);\r\n",
 						                   "		setLayout(null);\r\n",
 						                   "		setVisible(true);\r\n"};
@@ -412,7 +418,7 @@ public class base extends JFrame{
 				    for(int i=0; i<count; i++){
 				    	if(rect[i].type == null)
 				    		continue;
-					    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\"\");\r\n",
+					    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\""+rect[i].txt+"\");\r\n",
 				                              "		b.setLocation("+rect[i].startX+","+rect[i].startY+");\r\n", 
 				      		                  "		b.setSize("+rect[i].width+","+rect[i].height+");\r\n",
 				      		                  "		add("+rect[i].varName+");\r\n"};
@@ -444,7 +450,7 @@ public class base extends JFrame{
 				rect[pressed_index].varName = compName.getText();
 				System.out.println("ab");
 				repaint();
-			}else if(e.getSource() == Save){
+			}else if(e.getSource() == Save || e.getSource() == SaveButton){
 				  FileDialog saveDialog = new FileDialog(base.this,"历厘",FileDialog.SAVE);
 				  saveDialog.setVisible(true);
 				  String dfName = saveDialog.getDirectory() + saveDialog.getFile();
