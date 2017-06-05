@@ -25,6 +25,8 @@ public class base extends JFrame{
 	JTextField startX,startY,Width,Height,txtAttr,compName;
 	RectInfo rect[] = new RectInfo[MAX_OBJECT];
 	public EditorPanel PanelEditor;
+	boolean first_save = true;
+	String save_path = null;
 	
 	base(){
 		Dimension dim = new Dimension(1500,1000);
@@ -451,32 +453,18 @@ public class base extends JFrame{
 				System.out.println("ab");
 				repaint();
 			}else if(e.getSource() == Save || e.getSource() == SaveButton){
-				  FileDialog saveDialog = new FileDialog(base.this,"저장",FileDialog.SAVE);
-				  saveDialog.setVisible(true);
-				  String dfName = saveDialog.getDirectory() + saveDialog.getFile();
-				  try {
-					FileWriter save_writer = new FileWriter(dfName);
-
-					 JSONObject[] Jrect = new JSONObject[MAX_OBJECT];
-					 JSONArray JrectArray = new JSONArray();
-			            for(int i=0; i<count; i++){
-			            	Jrect[i] = new JSONObject();
-			                Jrect[i].put("startX", rect[i].startX);
-			                Jrect[i].put("startY", rect[i].startY);
-			                Jrect[i].put("width", rect[i].width);
-			                Jrect[i].put("height", rect[i].height);
-			                Jrect[i].put("txt", rect[i].txt);
-			                Jrect[i].put("type", rect[i].type);
-			                Jrect[i].put("varName", rect[i].varName);
-			                JrectArray.add(i, Jrect[i]);
-			            }
-
-			         //내용 저장후 종료
-			         save_writer.write(JrectArray.toJSONString());
-			         save_writer.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				MenuToolModel model = new MenuToolModel();
+				
+				if(first_save){
+					save_path = model.save(true, null);
+					first_save = false;
+				}else{
+					model.save(true, save_path);
 				}
+				
+			}else if(e.getSource() == SaveName || e.getSource() == SaveNameButton){
+				MenuToolModel model = new MenuToolModel();
+				model.save(false, null);
 			}
 		}	
 	    }
@@ -495,6 +483,43 @@ public class base extends JFrame{
 
 		}
 		
+	}
+	
+	class MenuToolModel{
+		String save(boolean onlySave, String pre_path){
+			String dfName = pre_path;
+			if(onlySave == true && pre_path != null){
+
+			}else{
+				FileDialog saveDialog = new FileDialog(base.this,"저장",FileDialog.SAVE);
+				saveDialog.setVisible(true);
+				dfName = saveDialog.getDirectory() + saveDialog.getFile();
+				}
+			try {
+				 FileWriter save_writer = new FileWriter(dfName);
+
+				 JSONObject[] Jrect = new JSONObject[MAX_OBJECT];
+				 JSONArray JrectArray = new JSONArray();
+		            for(int i=0; i<count; i++){
+		            	Jrect[i] = new JSONObject();
+		                Jrect[i].put("startX", rect[i].startX);
+		                Jrect[i].put("startY", rect[i].startY);
+		                Jrect[i].put("width", rect[i].width);
+		                Jrect[i].put("height", rect[i].height);
+		                Jrect[i].put("txt", rect[i].txt);
+		                Jrect[i].put("type", rect[i].type);
+		                Jrect[i].put("varName", rect[i].varName);
+		                JrectArray.add(i, Jrect[i]);
+		            }
+
+		         //내용 저장후 종료
+		         save_writer.write(JrectArray.toJSONString());
+		         save_writer.close();
+			 } catch (IOException e1) {
+			    	e1.printStackTrace();
+			 }
+			return dfName;
+	}
 	}
 	
 	public static void main(String[] args){
