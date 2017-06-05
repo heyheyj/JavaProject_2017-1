@@ -359,44 +359,38 @@ public class base extends JFrame{
 				  
 				  JSONParser parser = new JSONParser();
 				  try {
-					FileReader open_reader = new FileReader(dirName);
-					Object Jarr = parser.parse(open_reader);
-					JSONArray readJarray = (JSONArray) Jarr;
-					JSONObject readJobj = new JSONObject();
-					
-					if(readJarray != null){
-						readJobj = (JSONObject) readJarray.get(1);
-						for(int i=0; i<count; i++){
-					        rect[i] = null;
-					     }
-						count = 0;
-						
-						Iterator<JSONObject> iterator = readJarray.iterator();
-						int i = 0;
-						while(iterator.hasNext()){
-							rect[i] = new RectInfo();
-							readJobj = iterator.next();
-							rect[i].startX = Integer.parseInt(String.valueOf(readJobj.get("startX")));
-							rect[i].startY = Integer.parseInt(String.valueOf(readJobj.get("startY")));
-							rect[i].width = Integer.parseInt(String.valueOf(readJobj.get("width")));
-							rect[i].height = Integer.parseInt(String.valueOf(readJobj.get("height")));
-							rect[i].txt = String.valueOf(readJobj.get("txt"));
-							rect[i].type = String.valueOf(readJobj.get("type"));
-							rect[i].varName = String.valueOf(readJobj.get("varName"));
-							i++;
-							count++;
-					}
-						repaint();
-					}
-					open_reader.close();
-				} catch (IOException | ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-				  
-				  
-				  
+					  FileReader open_reader = new FileReader(dirName);
+					  Object Jarr = parser.parse(open_reader);
+					  JSONArray readJarray = (JSONArray) Jarr;
+					  if(readJarray != null){
+						  for(int i=0; i<count; i++){
+							  rect[i] = null;
+						  }
+						  
+						  count = 0;
+						  Iterator<JSONObject> iterator = readJarray.iterator();
+						  JSONObject readJobj = new JSONObject();
+						  int i = 0;
+						  while(iterator.hasNext()){
+							  rect[i] = new RectInfo();
+							  readJobj = iterator.next();
+							  rect[i].startX = Integer.parseInt(String.valueOf(readJobj.get("startX")));
+							  rect[i].startY = Integer.parseInt(String.valueOf(readJobj.get("startY")));
+							  rect[i].width = Integer.parseInt(String.valueOf(readJobj.get("width")));
+							  rect[i].height = Integer.parseInt(String.valueOf(readJobj.get("height")));
+							  rect[i].txt = String.valueOf(readJobj.get("txt"));
+							  rect[i].type = String.valueOf(readJobj.get("type"));
+							  rect[i].varName = String.valueOf(readJobj.get("varName"));
+							  i++;
+							  count++;
+						  }
+						  repaint();
+					 }
+					  open_reader.close();
+				   } catch (IOException | ParseException e1) {
+					   e1.printStackTrace();
+					 }
+			}	  
 			else if(e.getSource() == CloseButton || e.getSource() == Close){
 				System.exit(1);
 			}
