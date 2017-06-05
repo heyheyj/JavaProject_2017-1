@@ -1,7 +1,10 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -27,6 +30,8 @@ public class base extends JFrame{
 	public EditorPanel PanelEditor;
 	boolean first_save = true;
 	String save_path = null;
+	boolean file_loaded = false;
+	String loaded_file_path;
 	
 	base(){
 		Dimension dim = new Dimension(1500,1000);
@@ -356,19 +361,26 @@ public class base extends JFrame{
 				
 			}
 			else if(e.getSource() == OpenButton || e.getSource() == Open){
-				FileDialog openDialog = new FileDialog(base.this,"열기",FileDialog.LOAD);
-				  openDialog.setVisible(true);
-				  String dirName = openDialog.getDirectory() + openDialog.getFile();
-				  
-				  JSONParser parser = new JSONParser();
-				  try {
-					  FileReader open_reader = new FileReader(dirName);
-					  Object Jarr = parser.parse(open_reader);
-					  JSONArray readJarray = (JSONArray) Jarr;
-					  if(readJarray != null){
-						  for(int i=0; i<count; i++){
-							  rect[i] = null;
-						  }
+				JFileChooser JsaveDialog = new JFileChooser();
+				File temp_file = new File("*.json");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(".json file","json");
+				JsaveDialog.setFileFilter(filter);
+				JsaveDialog.setSelectedFile(temp_file);
+				int ret = JsaveDialog.showSaveDialog(base.this);
+				String dirName = JsaveDialog.getSelectedFile().getPath();
+				if(ret == JFileChooser.APPROVE_OPTION){
+					try{
+						file_loaded = true;
+						loaded_file_path = dirName;
+						JSONParser parser = new JSONParser();
+						FileReader open_reader = new FileReader(dirName);
+						Object Jarr = parser.parse(open_reader);
+						JSONArray readJarray = (JSONArray) Jarr;
+						
+						if(readJarray != null){
+							for(int i=0; i<count; i++){
+								rect[i] = null;
+							}
 						  
 						  count = 0;
 						  Iterator<JSONObject> iterator = readJarray.iterator();
@@ -388,59 +400,65 @@ public class base extends JFrame{
 							  count++;
 						  }
 						  repaint();
-					 }
-					  open_reader.close();
-				   } catch (IOException | ParseException e1) {
+						  }
+						
+					    open_reader.close();
+				       }catch (IOException | ParseException e1) {
 					   e1.printStackTrace();
 					 }
+				}
 			}	  
 			else if(e.getSource() == CloseButton || e.getSource() == Close){
 				System.exit(1);
 			}
 			else if(e.getSource() == NewJava || e.getSource() == NewJavaButton){
-				FileDialog JsaveDialog = new FileDialog(base.this,".java파일 생성",FileDialog.SAVE);
-				JsaveDialog.setVisible(true);
-				String dirName = JsaveDialog.getDirectory() + JsaveDialog.getFile();
-				
-				 StringTokenizer st = new StringTokenizer(JsaveDialog.getFile(), ".");
-				 String class_name = st.nextToken();
-				try {
-					FileWriter fout = new FileWriter(dirName);
-				    String java_code = "";
-				    String[] base_code1 = {"import javax.swing.*;\r\n",
-					    	               "public class "+class_name+" extends JFrame{\r\n",
-						                   "	"+class_name+"(){\r\n",
-						                   "		setTitle(\""+class_name+"\");\r\n",
-						                   "		setSize(1200,900);\r\n",
-						                   "		setLayout(null);\r\n",
-						                   "		setVisible(true);\r\n"};
-				    for(int i=0; i<base_code1.length; i++){
-				    	java_code = java_code.concat(base_code1[i]);
-				    }
-				    for(int i=0; i<count; i++){
-				    	if(rect[i].type == null)
-				    		continue;
-					    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\""+rect[i].txt+"\");\r\n",
-				                              "		b.setLocation("+rect[i].startX+","+rect[i].startY+");\r\n", 
-				      		                  "		b.setSize("+rect[i].width+","+rect[i].height+");\r\n",
-				      		                  "		add("+rect[i].varName+");\r\n"};
-					    for(int j=0; j<inst_code.length; j++){
-					    	java_code = java_code.concat(inst_code[j]);
+				JFileChooser JsaveDialog = new JFileChooser();
+				File temp_file = new File("*.java");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(".java file","java");
+				JsaveDialog.setFileFilter(filter);
+				JsaveDialog.setSelectedFile(temp_file);
+				int ret = JsaveDialog.showSaveDialog(base.this);
+				try{
+					String dirName = JsaveDialog.getSelectedFile().getPath();
+					if(ret == JFileChooser.APPROVE_OPTION){
+						StringTokenizer st = new StringTokenizer(JsaveDialog.getSelectedFile().getName(), ".");
+						String class_name = st.nextToken();
+						FileWriter fout = new FileWriter(dirName);
+					    String java_code = "";
+					    String[] base_code1 = {"import javax.swing.*;\r\n",
+						    	               "public class "+class_name+" extends JFrame{\r\n",
+							                   "	"+class_name+"(){\r\n",
+							                   "		setTitle(\""+class_name+"\");\r\n",
+							                   "		setSize(1200,900);\r\n",
+							                   "		setLayout(null);\r\n",
+							                   "		setVisible(true);\r\n"};
+					    for(int i=0; i<base_code1.length; i++){
+					    	java_code = java_code.concat(base_code1[i]);
 					    }
-				    }
-				    String[] base_code2 = {"	}\r\n",
-					    	               "	public static void main(String[] args) {\r\n",
-						                   "		new test();\r\n",
-						                   "	}\r\n",
-						                   "}"};
-				    for(int i=0; i<base_code2.length; i++){
-				    	java_code = java_code.concat(base_code2[i]);
-				    }
-				    fout.write(java_code);
-				    fout.close();
-				    } catch (IOException e1) {
-				    	e1.printStackTrace();
-				        }
+					    for(int i=0; i<count; i++){
+					    	if(rect[i].type == null)
+					    		continue;
+						    String inst_code[] = {"		"+rect[i].type+" "+rect[i].varName+" = new "+rect[i].type+"(\""+rect[i].txt+"\");\r\n",
+					                              "		b.setLocation("+rect[i].startX+","+rect[i].startY+");\r\n", 
+					      		                  "		b.setSize("+rect[i].width+","+rect[i].height+");\r\n",
+					      		                  "		add("+rect[i].varName+");\r\n"};
+						    for(int j=0; j<inst_code.length; j++){
+						    	java_code = java_code.concat(inst_code[j]);
+						    }
+					    }
+					    String[] base_code2 = {"	}\r\n",
+						    	               "	public static void main(String[] args) {\r\n",
+							                   "		new test();\r\n",
+							                   "	}\r\n",
+							                   "}"};
+					    for(int i=0; i<base_code2.length; i++){
+					    	java_code = java_code.concat(base_code2[i]);
+					    }
+					    fout.write(java_code);
+					    fout.close();
+					    }
+				}catch(Exception e1){				
+				}
 			}
 		   else if(e.getSource() == ApplyButton){
 			    rect[pressed_index].startX = Integer.parseInt(startX.getText());
@@ -455,7 +473,9 @@ public class base extends JFrame{
 			}else if(e.getSource() == Save || e.getSource() == SaveButton){
 				MenuToolModel model = new MenuToolModel();
 				
-				if(first_save){
+				if(file_loaded){
+					model.save(true, loaded_file_path);
+				}else if(first_save){
 					save_path = model.save(true, null);
 					first_save = false;
 				}else{
@@ -487,16 +507,20 @@ public class base extends JFrame{
 	
 	class MenuToolModel{
 		String save(boolean onlySave, String pre_path){
-			String dfName = pre_path;
+			String dirName = pre_path;
+			JFileChooser saveDialog = new JFileChooser();
 			if(onlySave == true && pre_path != null){
 
 			}else{
-				FileDialog saveDialog = new FileDialog(base.this,"저장",FileDialog.SAVE);
-				saveDialog.setVisible(true);
-				dfName = saveDialog.getDirectory() + saveDialog.getFile();
-				}
-			try {
-				 FileWriter save_writer = new FileWriter(dfName);
+				File temp_file = new File("*.json");
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("json file","json");
+				saveDialog.setFileFilter(filter);
+				saveDialog.setSelectedFile(temp_file);
+				int ret = saveDialog.showSaveDialog(base.this);
+				dirName = saveDialog.getSelectedFile().getPath();
+			}
+				try{
+				 FileWriter save_writer = new FileWriter(dirName);
 
 				 JSONObject[] Jrect = new JSONObject[MAX_OBJECT];
 				 JSONArray JrectArray = new JSONArray();
@@ -515,10 +539,9 @@ public class base extends JFrame{
 		         //내용 저장후 종료
 		         save_writer.write(JrectArray.toJSONString());
 		         save_writer.close();
-			 } catch (IOException e1) {
-			    	e1.printStackTrace();
+			     } catch (Exception e1) {
 			 }
-			return dfName;
+			return dirName;
 	}
 	}
 	
