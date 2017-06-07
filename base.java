@@ -353,21 +353,59 @@ public class base extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == NewFileButton || e.getSource() == NewFile){
-				for(int i=0; i<count; i++){
-					rect[i] = null;
+				if(file_loaded){
+					try {
+						JSONParser parser = new JSONParser();
+						FileReader loaded_reader = new FileReader(loaded_file_path);
+						Object Jarr = parser.parse(loaded_reader);
+						JSONArray readJarray = (JSONArray) Jarr;
+						
+						if(readJarray != null){
+							for(int i=0; i<count; i++){
+								rect[i] = null;
+							}
+						  
+						  count = 0;
+						  Iterator<JSONObject> iterator = readJarray.iterator();
+						  JSONObject readJobj = new JSONObject();
+						  int i = 0;
+						  while(iterator.hasNext()){
+							  rect[i] = new RectInfo();
+							  readJobj = iterator.next();
+							  rect[i].startX = Integer.parseInt(String.valueOf(readJobj.get("startX")));
+							  rect[i].startY = Integer.parseInt(String.valueOf(readJobj.get("startY")));
+							  rect[i].width = Integer.parseInt(String.valueOf(readJobj.get("width")));
+							  rect[i].height = Integer.parseInt(String.valueOf(readJobj.get("height")));
+							  rect[i].txt = String.valueOf(readJobj.get("txt"));
+							  rect[i].type = String.valueOf(readJobj.get("type"));
+							  rect[i].varName = String.valueOf(readJobj.get("varName"));
+							  i++;
+							  count++;
+						  }
+						  repaint();
+						  }
+						
+					    loaded_reader.close();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}else{
+					for(int i=0; i<count; i++){
+						rect[i] = null;
+					}
+					count = 0;
+					repaint();
 				}
-				repaint();
-				count = 0;
-				
 			}
 			else if(e.getSource() == OpenButton || e.getSource() == Open){
-				JFileChooser JsaveDialog = new JFileChooser();
+				JFileChooser JopenDialog = new JFileChooser();
 				File temp_file = new File("*.json");
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(".json file","json");
-				JsaveDialog.setFileFilter(filter);
-				JsaveDialog.setSelectedFile(temp_file);
-				int ret = JsaveDialog.showSaveDialog(base.this);
-				String dirName = JsaveDialog.getSelectedFile().getPath();
+				JopenDialog.setFileFilter(filter);
+				JopenDialog.setSelectedFile(temp_file);
+				int ret = JopenDialog.showOpenDialog(base.this);
+				String dirName = JopenDialog.getSelectedFile().getPath();
 				if(ret == JFileChooser.APPROVE_OPTION){
 					try{
 						file_loaded = true;
