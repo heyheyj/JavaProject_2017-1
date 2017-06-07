@@ -25,6 +25,7 @@ public class base extends JFrame{
 	JMenu FileMenu;
 	JMenuItem NewFile, Open, Save, SaveName, NewJava, Close;
 	JButton NewFileButton, OpenButton, SaveButton, SaveNameButton, NewJavaButton, CloseButton, ApplyButton;
+	JComboBox compType;
 	JTextField startX,startY,Width,Height,txtAttr,compName;
 	RectInfo rect[] = new RectInfo[MAX_OBJECT];
 	public EditorPanel PanelEditor;
@@ -137,7 +138,7 @@ public class base extends JFrame{
 		Box box5 = Box.createHorizontalBox();
 		PanelAttribute.add(box5);
 		box5.add(new JLabel("е╦ют : "));
-		JComboBox compType = new JComboBox();
+		compType = new JComboBox();
 		compType.addItem("JButton");
 		compType.addItem("JLabel");
 		compType.addItem("JTextField");
@@ -302,6 +303,7 @@ public class base extends JFrame{
 			Width.setText(String.valueOf(rect[pressed_index].width));
 			Height.setText(String.valueOf(rect[pressed_index].height));
 			txtAttr.setText(String.valueOf(rect[pressed_index].txt));
+			compType.setSelectedItem(rect[pressed_index].type);
 			compName.setText(rect[pressed_index].varName);
 		}
 		
@@ -500,13 +502,12 @@ public class base extends JFrame{
 			}
 		   else if(e.getSource() == ApplyButton){
 			    rect[pressed_index].startX = Integer.parseInt(startX.getText());
-				/*rect[pressed_index].startY = startY.getColumns();
-			    rect[pressed_index].width = Width.getColumns();
-				rect[pressed_index].height = Height.getColumns();
-				*/
+				rect[pressed_index].startY = Integer.parseInt(startY.getText());
+			    rect[pressed_index].width = Integer.parseInt(Width.getText());
+				rect[pressed_index].height = Integer.parseInt(Height.getText());
 			    rect[pressed_index].txt = txtAttr.getText();
+			    rect[pressed_index].type = (String) compType.getSelectedItem();
 				rect[pressed_index].varName = compName.getText();
-				System.out.println("ab");
 				repaint();
 			}else if(e.getSource() == Save || e.getSource() == SaveButton){
 				MenuToolModel model = new MenuToolModel();
